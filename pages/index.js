@@ -33,6 +33,8 @@ export default function Home({ data, defaultEndpoint }) {
   const [results, updateResults] = useState(Search);
   const [disableAdd, setDisableAdd] = useState(false);
   const [disableSub, setDisableSub] = useState(true);
+  const [pageNumber, updatePageNumber] = useState(1);
+  const [currentHref, updateCurrentHref] = useState(defaultEndpoint);
 
   let currentAmount = 0;
   let response = true;
@@ -46,31 +48,7 @@ export default function Home({ data, defaultEndpoint }) {
   } catch (error) {
     console.log("TRY CATCH ", error);
   }
-
-  console.log("Defaultresult ", results);
-  console.log("Current amount : ", currentAmount);
-
-  // const { pathname, query } = router;
-  console.log(
-    "Search : ",
-    Search,
-    " Results : ",
-    results,
-    " Response : ",
-    Response,
-    " Total results : ",
-    totalResults,
-    " Pathname : ",
-    router.pathname,
-    " Query : ",
-    router.query
-  );
-  const [pageNumber, updatePageNumber] = useState(1);
-  // const [movieTitle, updateMovieTitle] = useState(router.query.movieTitle);
-  const [currentHref, updateCurrentHref] = useState(defaultEndpoint);
-  console.log("Defaultendpoint ", defaultEndpoint);
-  console.log("Current href", currentHref);
-
+  
   const updateQuery = (movie, pageNumber) => {
     console.log("Verdier i updateQuery : ", movie, pageNumber);
     const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}`;
