@@ -5,6 +5,7 @@ import { Button, Col, Container, Navbar, Row } from "react-bootstrap";
 import Movie from "../components/movie";
 import { MovieForm } from "../components/movieForm";
 import { MainList } from "../components/mainList";
+import { MovieModal } from "../components/movieModal";
 // import styles from "../styles/Home.module.css";
 
 export async function getServerSideProps(req, res) {
@@ -32,11 +33,13 @@ export default function Home({ data, defaultEndpoint }) {
   const [results, updateResults] = useState(Search);
   const [disableAdd, setDisableAdd] = useState(false);
   const [disableSub, setDisableSub] = useState(true);
+  const [watchList, setWatchList] = useState([]);
+  console.log("HER ER WATCHLIST ", watchList);
+  let temporaryList = watchList;
   let currentAmount = 0;
   let response = true;
 
   if (Response == "False") {
-    console.log("Response false! Results set to empty");
     response = false;
   }
 
@@ -108,6 +111,28 @@ export default function Home({ data, defaultEndpoint }) {
     }
   }
 
+  const handleAdd = (event) => {
+    let alreadyExists = false;
+    watchList.forEach((element) => {
+      if (element.imdbID == event) {
+        alreadyExists = true;
+      }
+    });
+    if (alreadyExists) {
+      alert("Already added to watch list!");
+      return;
+    }
+
+    results.forEach((element) => {
+      if (element.imdbID === event) {
+        temporaryList.push(element);
+      }
+    });
+
+    setWatchList(temporaryList);
+    router.replace(router.asPath);
+  };
+
   useEffect(() => {
     if (!response) {
       return;
@@ -140,20 +165,27 @@ export default function Home({ data, defaultEndpoint }) {
           <MovieForm updateQuery={updateQuery} />
         </Col>
       </Row>
-      <Button disabled={disableAdd} onClick={incrementPageNumber}>
-        Next
-      </Button>
-      <Button disabled={disableSub} onClick={decrementPageNumber}>
-        Previous
-      </Button>
+
       <Row>
         <Col>
+          <h2>Movie List</h2>
+          <Button disabled={disableAdd} onClick={incrementPageNumber}>
+            Next
+          </Button>
+          <Button disabled={disableSub} onClick={decrementPageNumber}>
+            Previous
+          </Button>
           {results.map((result) => {
-            return <Movie key={result.imdbID} props={result} />;
+            return (
+              <MovieModal handleAdd={handleAdd}>
+                <Movie key={result.imdbID} props={result} />
+              </MovieModal>
+            );
           })}
         </Col>
         <Col>
-          {results.map((result) => {
+          <h2>Watch List</h2>
+          {watchList.map((result) => {
             return <Movie key={result.imdbID} props={result} />;
           })}
         </Col>

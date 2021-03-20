@@ -18,8 +18,6 @@ export const MovieForm = ({ updateQuery, updateData }) => {
     if (data.Response === "True") {
       console.log("Response = ", data.Response);
       updateQuery(state, 1);
-    //   updateData();
-      //   updateCurrentHref(endpoint);
     } else {
       alert("Error!");
     }
