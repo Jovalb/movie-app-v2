@@ -36,6 +36,40 @@ export const MovieModal = ({ children, handleAdd }) => {
   );
 };
 
+export const WatchListModal = ({ children, handleRemove }) => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleDelete = (event) => {
+    handleRemove(event);
+    setShow(false);
+  };
+
+  return (
+    <>
+      <span className={styles.movieModal} onClick={handleShow}>
+        {children}
+      </span>
+
+      <Modal size="sm" centered show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Remove from watch list?</Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => handleDelete(children.key)}>
+            Remove
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
 // export const AlertModal = ({ children, responseBol }) => {
 //   const [show, setShow] = useState(false);
 

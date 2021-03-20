@@ -33,9 +33,7 @@ export default function Home({ data, defaultEndpoint }) {
   const [results, updateResults] = useState(Search);
   const [disableAdd, setDisableAdd] = useState(false);
   const [disableSub, setDisableSub] = useState(true);
-  const [watchList, setWatchList] = useState([]);
-  console.log("HER ER WATCHLIST ", watchList);
-  let temporaryList = watchList;
+
   let currentAmount = 0;
   let response = true;
 
@@ -68,7 +66,7 @@ export default function Home({ data, defaultEndpoint }) {
     router.query
   );
   const [pageNumber, updatePageNumber] = useState(1);
-  const [movieTitle, updateMovieTitle] = useState(router.query.movieTitle);
+  // const [movieTitle, updateMovieTitle] = useState(router.query.movieTitle);
   const [currentHref, updateCurrentHref] = useState(defaultEndpoint);
   console.log("Defaultendpoint ", defaultEndpoint);
   console.log("Current href", currentHref);
@@ -111,28 +109,6 @@ export default function Home({ data, defaultEndpoint }) {
     }
   }
 
-  const handleAdd = (event) => {
-    let alreadyExists = false;
-    watchList.forEach((element) => {
-      if (element.imdbID == event) {
-        alreadyExists = true;
-      }
-    });
-    if (alreadyExists) {
-      alert("Already added to watch list!");
-      return;
-    }
-
-    results.forEach((element) => {
-      if (element.imdbID === event) {
-        temporaryList.push(element);
-      }
-    });
-
-    setWatchList(temporaryList);
-    router.replace(router.asPath);
-  };
-
   useEffect(() => {
     if (!response) {
       return;
@@ -160,36 +136,20 @@ export default function Home({ data, defaultEndpoint }) {
           <h2>Movie-Search</h2>
         </Navbar.Brand>
       </Navbar>
-      <Row class="margin: auto">
-        <Col>
-          <MovieForm updateQuery={updateQuery} />
-        </Col>
-      </Row>
 
-      <Row>
-        <Col>
-          <h2>Movie List</h2>
-          <Button disabled={disableAdd} onClick={incrementPageNumber}>
-            Next
-          </Button>
-          <Button disabled={disableSub} onClick={decrementPageNumber}>
-            Previous
-          </Button>
-          {results.map((result) => {
-            return (
-              <MovieModal handleAdd={handleAdd}>
-                <Movie key={result.imdbID} props={result} />
-              </MovieModal>
-            );
-          })}
-        </Col>
-        <Col>
-          <h2>Watch List</h2>
-          {watchList.map((result) => {
-            return <Movie key={result.imdbID} props={result} />;
-          })}
-        </Col>
-      </Row>
+      <Container>
+        <Row className="justify-content-center">
+          <MovieForm updateQuery={updateQuery} />
+        </Row>
+        <MainList
+          results={results}
+          router={router}
+          disableAdd={disableAdd}
+          disableSub={disableSub}
+          incrementPageNumber={incrementPageNumber}
+          decrementPageNumber={decrementPageNumber}
+        />
+      </Container>
     </Container>
   );
 }

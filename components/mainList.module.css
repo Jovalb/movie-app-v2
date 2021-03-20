@@ -1,0 +1,24 @@
+.rowLists {
+  text-align: center;
+  height: 65vh;
+}
+
+
+
+.list {
+  height: 65vh;
+  overflow-y: auto;
+  margin-top: 2rem;
+  border-bottom: 1px solid #c9c9c9;
+}
+
+@media screen and (max-width: 400px) {
+  .rowLists h3 {
+    font-size: 1.3rem;
+  }
+}
+
+
+/* .rowLists h2 {
+  text-align: center;
+} */
