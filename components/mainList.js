@@ -70,7 +70,7 @@ export const MainList = ({
   return (
     <Container>
       <Row>
-        <Col>
+        <Col className={styles.listHeader}>
           <h2>MovieList</h2>
           <Button disabled={disableAdd} onClick={incrementPageNumber}>
             Next
@@ -94,7 +94,7 @@ export const MainList = ({
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className={styles.listHeader}>
           <h2>Watch List</h2>
         </Col>
       </Row>

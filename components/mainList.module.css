@@ -4,16 +4,20 @@
 }
 
 .list {
-  height: 65vh;
-  overflow-y: auto;
   margin-top: 2rem;
   border-bottom: 1px solid #c9c9c9;
+}
+
+.listHeader {
+  text-align: center;
 }
 
 .cardDeck {
   display: flex;
   flex-flow: row nowrap;
   overflow: auto;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #c9c9c9;
 }
 
 @media screen and (max-width: 400px) {
