@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Movie from "./movie";
 import { MovieModal, WatchListModal } from "./movieModal";
 import styles from "./mainList.module.css";
+import localStorage from "localStorage";
 
 export const MainList = ({
   results,
@@ -12,7 +13,15 @@ export const MainList = ({
   incrementPageNumber,
   decrementPageNumber,
 }) => {
-  const [watchList, setWatchList] = useState([]);
+  const cachedWatchList = JSON.parse(localStorage.getItem("cachedList"));
+  const [watchList, setWatchList] = useState(cachedWatchList || []);
+
+  if (cachedWatchList) {
+    console.log("Local storage true!");
+    console.log("Local storage : ", cachedWatchList);
+  }
+
+  console.log("Watchlist : ", watchList);
   let temporaryList = watchList;
 
   const handleAdd = (event) => {
@@ -35,6 +44,7 @@ export const MainList = ({
       }
     });
 
+    localStorage.setItem("cachedList", JSON.stringify(temporaryList));
     setWatchList(temporaryList);
     router.replace(router.asPath);
   };
@@ -45,6 +55,7 @@ export const MainList = ({
         watchList.pop(element);
       }
     });
+    localStorage.setItem("cachedList", JSON.stringify(temporaryList));
     router.replace(router.asPath);
   };
 

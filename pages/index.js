@@ -35,9 +35,22 @@ export default function Home({ data, defaultEndpoint }) {
   const [disableSub, setDisableSub] = useState(true);
   const [pageNumber, updatePageNumber] = useState(1);
   const [currentHref, updateCurrentHref] = useState(defaultEndpoint);
-
   let currentAmount = 0;
   let response = true;
+
+  useEffect(() => {
+    if (!response) {
+      return;
+    }
+    console.log("USE EFFECT RESULTS");
+    updateResults(Search);
+    updatePageNumber(parseInt(router.query.pageNumber));
+  }, [Search, response]);
+
+  useEffect(() => {
+    console.log("USE EFFECT NEXTPAGE");
+    nextPage();
+  }, [pageNumber]);
 
   if (Response == "False") {
     response = false;
@@ -48,7 +61,7 @@ export default function Home({ data, defaultEndpoint }) {
   } catch (error) {
     console.log("TRY CATCH ", error);
   }
-  
+
   const updateQuery = (movie, pageNumber) => {
     console.log("Verdier i updateQuery : ", movie, pageNumber);
     const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}`;
@@ -86,20 +99,6 @@ export default function Home({ data, defaultEndpoint }) {
       setDisableSub(true);
     }
   }
-
-  useEffect(() => {
-    if (!response) {
-      return;
-    }
-    console.log("USE EFFECT RESULTS");
-    updateResults(Search);
-    updatePageNumber(parseInt(router.query.pageNumber));
-  }, [Search, response]);
-
-  useEffect(() => {
-    console.log("USE EFFECT NEXTPAGE");
-    nextPage();
-  }, [pageNumber]);
 
   return (
     <Container fluid="true">
