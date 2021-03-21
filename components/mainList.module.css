@@ -3,8 +3,6 @@
   height: 65vh;
 }
 
-
-
 .list {
   height: 65vh;
   overflow-y: auto;
@@ -12,12 +10,17 @@
   border-bottom: 1px solid #c9c9c9;
 }
 
+.cardDeck {
+  display: flex;
+  flex-flow: row nowrap;
+  overflow: auto;
+}
+
 @media screen and (max-width: 400px) {
   .rowLists h3 {
     font-size: 1.3rem;
   }
 }
-
 
 /* .rowLists h2 {
   text-align: center;

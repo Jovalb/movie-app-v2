@@ -2,17 +2,16 @@ import styles from "./movie.module.css";
 import { Card } from "react-bootstrap";
 
 const Movie = ({ props }) => {
-  const { Title, Year, imdbID, Type } = props;
+  const { Title, Year, imdbID, Type, Poster } = props;
   return (
-    <div key={imdbID}>
-      <Card className={styles.card}>
-        <Card.Body>
-          <Card.Title>{Title}</Card.Title>
-          <Card.Text>{Year}</Card.Text>
-          <Card.Text>{Type}</Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+    <Card className={styles.card}>
+      <Card.Img style={{width: "15rem", height: "15rem"}} src={Poster} />
+      <Card.Body>
+        <Card.Title>{Title}</Card.Title>
+        <Card.Text>{Year}</Card.Text>
+        <Card.Text>{Type}</Card.Text>
+      </Card.Body>
+    </Card>
   );
 };
 

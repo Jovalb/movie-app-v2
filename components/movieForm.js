@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
+import styles from "./movieForm.module.css"
 
-export const MovieForm = ({ updateQuery}) => {
+export const MovieForm = ({ updateQuery }) => {
   const [movieTitle, setMovieTitle] = useState("");
 
   function handleChange(event) {
@@ -24,17 +25,19 @@ export const MovieForm = ({ updateQuery}) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group>
-        <Form.Label>Start searching for a movie here!</Form.Label>
-        <Form.Control
-          size="lg"
-          type="text"
-          value={movieTitle}
-          onChange={handleChange}
-          placeholder="Enter movie title"
-        />
-      </Form.Group>
-    </Form>
+    <Row className={styles.mainRow}>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>Start searching for a movie here!</Form.Label>
+          <Form.Control
+            size="lg"
+            type="text"
+            value={movieTitle}
+            onChange={handleChange}
+            placeholder="Enter movie title"
+          />
+        </Form.Group>
+      </Form>
+    </Row>
   );
 };

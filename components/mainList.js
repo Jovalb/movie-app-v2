@@ -1,9 +1,15 @@
-import { Button, Col, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Row,
+  Container,
+  CardColumns,
+  CardDeck,
+} from "react-bootstrap";
 import { useEffect, useState } from "react";
 import Movie from "./movie";
 import { MovieModal, WatchListModal } from "./movieModal";
 import styles from "./mainList.module.css";
-import localStorage from "localStorage";
 import store from "store2";
 
 export const MainList = ({
@@ -62,38 +68,85 @@ export const MainList = ({
   };
 
   return (
-    <Row className={styles.rowLists}>
-      <Col>
-        <h2>Movie List</h2>
-
-        <div className={styles.list}>
-          {results.map((result) => {
-            return (
-              <MovieModal handleAdd={handleAdd}>
-                <Movie key={result.imdbID} props={result} />
-              </MovieModal>
-            );
-          })}
-        </div>
-        <Button disabled={disableAdd} onClick={incrementPageNumber}>
-          Next
-        </Button>
-        <Button disabled={disableSub} onClick={decrementPageNumber}>
-          Previous
-        </Button>
-      </Col>
-      <Col>
-        <h2>Watch List</h2>
-        <div className={styles.list}>
-          {watchList.map((result) => {
-            return (
-              <WatchListModal handleRemove={handleRemove}>
-                <Movie key={result.imdbID} props={result} />
-              </WatchListModal>
-            );
-          })}
-        </div>
-      </Col>
-    </Row>
+    <Container>
+      <Row>
+        <Col>
+          <h2>MovieList</h2>
+          <Button disabled={disableAdd} onClick={incrementPageNumber}>
+            Next
+          </Button>
+          <Button disabled={disableSub} onClick={decrementPageNumber}>
+            Prev
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <CardDeck className={styles.cardDeck}>
+            {results.map((result) => {
+              return (
+                <MovieModal handleAdd={handleAdd}>
+                  <Movie key={result.imdbID} props={result} />
+                </MovieModal>
+              );
+            })}
+          </CardDeck>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <h2>Watch List</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <CardDeck className={styles.cardDeck}>
+            {watchList.map((result) => {
+              return (
+                <WatchListModal handleRemove={handleRemove}>
+                  <Movie key={result.imdbID} props={result} />
+                </WatchListModal>
+              );
+            })}
+          </CardDeck>
+        </Col>
+      </Row>
+    </Container>
   );
+
+  // return (
+  //   <Row className={styles.rowLists}>
+  //     <Col>
+  //       <h2>Movie List</h2>
+
+  //       <div className={styles.list}>
+  //         {results.map((result) => {
+  //           return (
+  //             <MovieModal handleAdd={handleAdd}>
+  //               <Movie key={result.imdbID} props={result} />
+  //             </MovieModal>
+  //           );
+  //         })}
+  //       </div>
+  //       <Button disabled={disableAdd} onClick={incrementPageNumber}>
+  //         Next
+  //       </Button>
+  //       <Button disabled={disableSub} onClick={decrementPageNumber}>
+  //         Prev
+  //       </Button>
+  //     </Col>
+  //     <Col>
+  //       <h2>Watch List</h2>
+  //       <div className={styles.list}>
+  //         {watchList.map((result) => {
+  //           return (
+  //             <WatchListModal handleRemove={handleRemove}>
+  //               <Movie key={result.imdbID} props={result} />
+  //             </WatchListModal>
+  //           );
+  //         })}
+  //       </div>
+  //     </Col>
+  //   </Row>
+  // );
 };

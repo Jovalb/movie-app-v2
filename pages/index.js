@@ -113,26 +113,22 @@ export default function Home({ data, defaultEndpoint }) {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Navbar bg="dark" variant="dark" className="justify-content-center">
         <Navbar.Brand>
           <h2>Movie-Search</h2>
         </Navbar.Brand>
       </Navbar>
 
-      <Container>
-        <Row className="justify-content-center">
-          <MovieForm updateQuery={updateQuery} />
-        </Row>
-        <MainList
-          results={results}
-          router={router}
-          disableAdd={disableAdd}
-          disableSub={disableSub}
-          incrementPageNumber={incrementPageNumber}
-          decrementPageNumber={decrementPageNumber}
-        />
-      </Container>
+      <MovieForm updateQuery={updateQuery} />
+
+      <MainList
+        results={results}
+        router={router}
+        disableAdd={disableAdd}
+        disableSub={disableSub}
+        incrementPageNumber={incrementPageNumber}
+        decrementPageNumber={decrementPageNumber}
+      />
     </Container>
   );
 }
