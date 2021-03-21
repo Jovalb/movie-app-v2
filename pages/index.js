@@ -8,26 +8,41 @@ import { MainList } from "../components/mainList";
 import { MovieModal } from "../components/movieModal";
 // import styles from "../styles/Home.module.css";
 
-export async function getServerSideProps(req, res) {
-  const movieTitle = req.query.movieTitle;
-  const pageNumber = req.query.pageNumber;
+export async function getServerSideProps(req) {
+  let movieTitle = req.query.movieTitle;
+  let pageNumber = req.query.pageNumber;
+  let type = req.query.type;
 
-  console.log("serverside : ", movieTitle, pageNumber);
-  const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}`;
-  // const defaultEndpoint = `http://www.omdbapi.com/?s=${movieTitle}&page=${page}&apikey=740f1667`;
-  res = await fetch(defaultEndpoint);
+  if (
+    typeof movieTitle === "undefined" &&
+    typeof pageNumber === "undefined" &&
+    typeof type === "undefined"
+  ) {
+    console.log("UNDEFINED");
+    (movieTitle = "mulan"), (pageNumber = 1), (type = "");
+  }
+
+  console.log("serverside : ", movieTitle, type, pageNumber);
+  const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}`;
+  const res = await fetch(defaultEndpoint);
+  const errorCode = res.ok ? false : res.status;
+
+  if (errorCode) {
+    res.statusCode = errorCode;
+  }
+
+  console.log("RESPONSE ok? ", errorCode);
   const data = await res.json();
-  console.log("Her er data serverside ", data);
   return {
     props: {
       data,
       defaultEndpoint,
+      errorCode,
     },
   };
 }
 
-export default function Home({ data, defaultEndpoint }) {
-  console.log("Her er data", data);
+export default function Home({ data, defaultEndpoint, errorCode }) {
   const router = useRouter();
   const { Search, Response, totalResults } = data;
   const [results, updateResults] = useState(Search);
@@ -41,6 +56,7 @@ export default function Home({ data, defaultEndpoint }) {
   if (Response == "False") {
     response = false;
   }
+  console.log("REPONSE ", response);
 
   try {
     currentAmount = results.length;
@@ -50,6 +66,7 @@ export default function Home({ data, defaultEndpoint }) {
 
   useEffect(() => {
     if (!response) {
+      updateQuery("mulan", "", 1);
       return;
     }
     console.log("USE EFFECT RESULTS");
@@ -75,16 +92,21 @@ export default function Home({ data, defaultEndpoint }) {
     }
   });
 
-  const updateQuery = (movie, pageNumber) => {
-    console.log("Verdier i updateQuery : ", movie, pageNumber);
-    const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}`;
+  const updateQuery = (movie, type, pageNumber) => {
+    console.log("Verdier i updateQuery : ", movie, type, pageNumber);
+    const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}&type=${type}`;
 
     router.push(href);
   };
 
   const nextPage = () => {
-    console.log("Nextpage: ", router.query.movieTitle, pageNumber);
-    const href = `/?movieTitle=${router.query.movieTitle}&pageNumber=${pageNumber}`;
+    console.log(
+      "Nextpage: ",
+      router.query.movieTitle,
+      router.query.type,
+      pageNumber
+    );
+    const href = `/?movieTitle=${router.query.movieTitle}&pageNumber=${pageNumber}&type=${router.query.type}`;
 
     router.push(href);
   };
