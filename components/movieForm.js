@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 
-export const MovieForm = ({ updateQuery, updateData }) => {
-  const [state, setState] = useState("");
+export const MovieForm = ({ updateQuery}) => {
+  const [movieTitle, setMovieTitle] = useState("");
 
   function handleChange(event) {
-    setState(event.target.value);
-    console.log("state ", state);
+    setMovieTitle(event.target.value);
+    console.log("movieTitle ", movieTitle);
   }
 
   async function handleSubmit(event) {
     event.stopPropagation();
     event.preventDefault();
-    const endpoint = `http://localhost:3000/api/getData?movieTitle=${state}&pageNumber=${1}`;
+    const endpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${1}`;
     const res = await fetch(endpoint);
     const data = await res.json();
     if (data.Response === "True") {
       console.log("Response = ", data.Response);
-      updateQuery(state, 1);
+      updateQuery(movieTitle, 1);
     } else {
       alert("Please enter a valid movie title!");
     }
@@ -30,7 +30,7 @@ export const MovieForm = ({ updateQuery, updateData }) => {
         <Form.Control
           size="lg"
           type="text"
-          value={state}
+          value={movieTitle}
           onChange={handleChange}
           placeholder="Enter movie title"
         />
