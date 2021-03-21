@@ -19,7 +19,7 @@ export const MovieForm = ({ updateQuery, updateData }) => {
       console.log("Response = ", data.Response);
       updateQuery(state, 1);
     } else {
-      alert("Error!");
+      alert("Please enter a valid movie title!");
     }
   }
 

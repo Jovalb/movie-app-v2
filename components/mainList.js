@@ -4,6 +4,7 @@ import Movie from "./movie";
 import { MovieModal, WatchListModal } from "./movieModal";
 import styles from "./mainList.module.css";
 import localStorage from "localStorage";
+import store from "store2";
 
 export const MainList = ({
   results,
@@ -13,13 +14,15 @@ export const MainList = ({
   incrementPageNumber,
   decrementPageNumber,
 }) => {
-  const cachedWatchList = JSON.parse(localStorage.getItem("cachedList"));
-  const [watchList, setWatchList] = useState(cachedWatchList || []);
-
-  if (cachedWatchList) {
-    console.log("Local storage true!");
-    console.log("Local storage : ", cachedWatchList);
-  }
+  // const cachedWatchList = store.session.get("cachedList");
+  // const cachedWatchList = JSON.parse(localStorage.getItem("cachedList"));
+  const [watchList, setWatchList] = useState(
+    store.session.get("cachedList") || []
+  );
+  useEffect(() => {
+    console.log("USE EFFECT CACHE", temporaryList);
+    store.session.set("cachedList", temporaryList);
+  });
 
   console.log("Watchlist : ", watchList);
   let temporaryList = watchList;
@@ -35,16 +38,15 @@ export const MainList = ({
       alert("Already added to watch list!");
       return;
     }
-    let elementAdded = false;
+    let alreadyAdded = false;
 
     results.forEach((element) => {
-      if (element.imdbID === event && !elementAdded) {
+      if (element.imdbID === event && !alreadyAdded) {
         temporaryList.push(element);
-        elementAdded = true;
+        alreadyAdded = true;
       }
     });
 
-    localStorage.setItem("cachedList", JSON.stringify(temporaryList));
     setWatchList(temporaryList);
     router.replace(router.asPath);
   };
@@ -55,7 +57,7 @@ export const MainList = ({
         watchList.pop(element);
       }
     });
-    localStorage.setItem("cachedList", JSON.stringify(temporaryList));
+
     router.replace(router.asPath);
   };
 

@@ -38,6 +38,16 @@ export default function Home({ data, defaultEndpoint }) {
   let currentAmount = 0;
   let response = true;
 
+  if (Response == "False") {
+    response = false;
+  }
+
+  try {
+    currentAmount = results.length;
+  } catch (error) {
+    console.log("TRY CATCH ", error);
+  }
+
   useEffect(() => {
     if (!response) {
       return;
@@ -52,15 +62,18 @@ export default function Home({ data, defaultEndpoint }) {
     nextPage();
   }, [pageNumber]);
 
-  if (Response == "False") {
-    response = false;
-  }
-
-  try {
-    currentAmount = results.length;
-  } catch (error) {
-    console.log("TRY CATCH ", error);
-  }
+  useEffect(() => {
+    if (currentAmount < 10) {
+      setDisableAdd(true);
+    } else {
+      setDisableAdd(false);
+    }
+    if (pageNumber > 1) {
+      setDisableSub(false);
+    } else if (pageNumber == 1) {
+      setDisableSub(true);
+    }
+  });
 
   const updateQuery = (movie, pageNumber) => {
     console.log("Verdier i updateQuery : ", movie, pageNumber);
@@ -78,25 +91,18 @@ export default function Home({ data, defaultEndpoint }) {
 
   function incrementPageNumber() {
     if (currentAmount < 10) {
-      setDisableAdd(true);
       return;
     } else {
       updatePageNumber(pageNumber + 1);
-      setDisableSub(false);
     }
   }
 
   function decrementPageNumber() {
     if (pageNumber > 1) {
-      if (disableAdd) {
-        setDisableAdd(false);
-      }
       updatePageNumber(pageNumber - 1);
     } else if (pageNumber == 2) {
       updatePageNumber(pageNumber - 1);
-      setDisableSub(true);
     } else {
-      setDisableSub(true);
     }
   }
 
