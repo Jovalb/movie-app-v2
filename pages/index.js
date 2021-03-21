@@ -23,7 +23,7 @@ export async function getServerSideProps(req) {
   }
 
   console.log("serverside : ", movieTitle, type, pageNumber);
-  const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}`;
+  const defaultEndpoint = `http://10.0.0.71:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}`;
   const res = await fetch(defaultEndpoint);
   const errorCode = res.ok ? false : res.status;
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Row } from "react-bootstrap";
 import styles from "./movieForm.module.css";
 
@@ -16,18 +16,19 @@ export const MovieForm = ({ updateQuery }) => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const endpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${1}&type=${type}`;
-    console.log(endpoint);
+    const endpoint = `http://10.0.0.71:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${1}&type=${type}`;
     const res = await fetch(endpoint);
     const data = await res.json();
-    console.log(data.Response);
     if (data.Response === "True") {
-      console.log("Response = ", data.Response);
       updateQuery(movieTitle, type, 1);
     } else {
       alert("Please enter a valid movie title!");
     }
   }
+
+  useEffect(() => {
+    updateQuery(movieTitle, type, 1);
+  }, [type]);
 
   return (
     <Row className={styles.mainRow}>
