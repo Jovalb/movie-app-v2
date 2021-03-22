@@ -1,16 +1,16 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Button, Col, Container, Navbar, Row } from "react-bootstrap";
-import Movie from "../components/movie";
+import { Container, Navbar } from "react-bootstrap";
 import MovieForm from "../components/movieForm";
 import { MainList } from "../components/mainList";
-import { MovieModal } from "../components/movieModal";
 import { GetServerSideProps } from "next";
-// import styles from "../styles/Home.module.css";
 
+// Function for fetching props to the page using getServerSideProps
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Constructing a default URL if the fetch goes wrong
   const defaultPage = "/?movieTitle=Mulan&pageNumber=1&type=&year=";
+  // Variables fetched from the query being used for the fetch request to the api
   let pageNumber: number = +context.query.pageNumber;
   let { movieTitle, type, year } = context.query;
 
@@ -18,11 +18,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     pageNumber = 1;
   }
 
-  console.log("serverside : ", movieTitle, type, pageNumber, year);
+  // Fetching to the api point at /api/getData and passing the query parameters
   const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}&year=${year}`;
   const res = await fetch(defaultEndpoint);
-  const errorCode = res.ok ? false : res.status;
 
+  // If the fetch return status code 400, "errorCode" will be true and redirect to the defaultPage.
+  const errorCode = res.ok ? false : res.status;
   if (errorCode) {
     return {
       redirect: {
@@ -31,8 +32,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
+  // If the fetch returns status 200, it will send the props down to the index component.
   const data = await res.json();
-
   return {
     props: {
       data,
@@ -40,35 +41,45 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
+//This is the index component which takes in the props from the fetch.
 const Home = ({ data }) => {
+  // Here all the variables and use states needed are created.
+
+  // The router is created so we can use it to push new queries or reload the page without a complete reload of the browser.
   const router = useRouter();
-  const { Search, Response, totalResults } = data;
+
+  // Here the "Search" results are destrucutred from the props and the "results" use-state is sets the search results to default.
+  const { Search } = data;
   const [results, updateResults] = useState(Search);
+  // Use states for disabling and enabling the next,prev buttons and for updating the page number when conditions are met.
   const [disableAdd, setDisableAdd] = useState(false);
   const [disableSub, setDisableSub] = useState(true);
   const [pageNumber, updatePageNumber] = useState(1);
+
+  // Initializing current amount
   let currentAmount: number = 0;
-  let response: boolean = true;
 
-  // if (Response == "False") {
-  //   response = false;
-  // }
-
+  // Setting currentamount to be length of the results, if it is less than 10 we are on the last page
   try {
     currentAmount = results.length;
   } catch (error) {
-    console.log("TRY CATCH ", error);
+    console.log("TRY CATCH CURRENT AMOUNT", error);
   }
 
+  // USE EFFECTS
+
+  // Use effect that triggers when search result is updated and updates the current result and page
   useEffect(() => {
     updateResults(Search);
     updatePageNumber(pageNumber);
-  }, [Search, response]);
+  }, [Search]);
 
+  // use effect that updates to next page when page number is changed
   useEffect(() => {
     nextPage();
   }, [pageNumber]);
 
+  // use effect that enables and disables the next and prev button when conditions are met
   useEffect(() => {
     if (currentAmount < 10) {
       setDisableAdd(true);
@@ -81,24 +92,27 @@ const Home = ({ data }) => {
       setDisableSub(true);
     }
   });
+  // USE EFFECTS
 
+  // function for updating the query of the page via the router
   const updateQuery = (
     movie: string,
     type: string,
     pageNumber: number,
     year: string
   ) => {
-    console.log("Verdier i updateQuery : ", movie, type, pageNumber, year);
     const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}&type=${type}&year=${year}`;
 
     router.push(href);
   };
 
+  // function for updating to next page via the router
   const nextPage = () => {
     const href = `/?movieTitle=${router.query.movieTitle}&pageNumber=${pageNumber}&type=${router.query.type}&year=${router.query.year}`;
     router.push(href);
   };
 
+  // function for incrementing the state of page number
   const incrementPageNumber = () => {
     if (currentAmount < 10) {
       return;
@@ -107,6 +121,7 @@ const Home = ({ data }) => {
     }
   };
 
+  // function for decrementing the state of page number
   const decrementPageNumber = () => {
     if (pageNumber > 1) {
       updatePageNumber(pageNumber - 1);
@@ -117,6 +132,7 @@ const Home = ({ data }) => {
   };
 
   return (
+    // Here I used bootstrap to make the setup easier and more responsive with some inline styling
     <Container fluid="true">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -129,8 +145,10 @@ const Home = ({ data }) => {
         </Navbar.Brand>
       </Navbar>
 
+      {/* updateQuery is passed to the movieForm where we can use it to update the query */}
       <MovieForm updateQuery={updateQuery} />
 
+      {/* Results is passed to the lists together with functions for page buttons and router for refreshing data */}
       <MainList
         results={results}
         router={router}
