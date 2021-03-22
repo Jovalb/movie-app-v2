@@ -3,60 +3,56 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Col, Container, Navbar, Row } from "react-bootstrap";
 import Movie from "../components/movie";
-import { MovieForm } from "../components/movieForm";
+import MovieForm from "../components/movieForm";
 import { MainList } from "../components/mainList";
 import { MovieModal } from "../components/movieModal";
+import { GetServerSideProps } from "next";
 // import styles from "../styles/Home.module.css";
 
-export async function getServerSideProps(req) {
-  let movieTitle = req.query.movieTitle;
-  let pageNumber = req.query.pageNumber;
-  let type = req.query.type;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const defaultPage = "/?movieTitle=Mulan&pageNumber=1&type=&year=";
+  let pageNumber: number = +context.query.pageNumber;
+  let { movieTitle, type, year } = context.query;
 
-  if (
-    typeof movieTitle === "undefined" &&
-    typeof pageNumber === "undefined" &&
-    typeof type === "undefined"
-  ) {
-    console.log("UNDEFINED");
-    (movieTitle = "mulan"), (pageNumber = 1), (type = "");
+  if (isNaN(pageNumber)) {
+    pageNumber = 1;
   }
 
-  console.log("serverside : ", movieTitle, type, pageNumber);
-  const defaultEndpoint = `http://10.0.0.71:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}`;
+  console.log("serverside : ", movieTitle, type, pageNumber, year);
+  const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}&year=${year}`;
   const res = await fetch(defaultEndpoint);
   const errorCode = res.ok ? false : res.status;
 
   if (errorCode) {
-    res.statusCode = errorCode;
+    return {
+      redirect: {
+        destination: defaultPage,
+        permanent: false,
+      },
+    };
   }
-
-  console.log("RESPONSE ok? ", errorCode);
   const data = await res.json();
+
   return {
     props: {
       data,
-      defaultEndpoint,
-      errorCode,
     },
   };
-}
+};
 
-export default function Home({ data, defaultEndpoint, errorCode }) {
+const Home = ({ data }) => {
   const router = useRouter();
   const { Search, Response, totalResults } = data;
   const [results, updateResults] = useState(Search);
   const [disableAdd, setDisableAdd] = useState(false);
   const [disableSub, setDisableSub] = useState(true);
   const [pageNumber, updatePageNumber] = useState(1);
-  const [currentHref, updateCurrentHref] = useState(defaultEndpoint);
-  let currentAmount = 0;
-  let response = true;
+  let currentAmount: number = 0;
+  let response: boolean = true;
 
-  if (Response == "False") {
-    response = false;
-  }
-  console.log("REPONSE ", response);
+  // if (Response == "False") {
+  //   response = false;
+  // }
 
   try {
     currentAmount = results.length;
@@ -65,17 +61,11 @@ export default function Home({ data, defaultEndpoint, errorCode }) {
   }
 
   useEffect(() => {
-    if (!response) {
-      updateQuery("mulan", "", 1);
-      return;
-    }
-    console.log("USE EFFECT RESULTS");
     updateResults(Search);
-    updatePageNumber(parseInt(router.query.pageNumber));
+    updatePageNumber(pageNumber);
   }, [Search, response]);
 
   useEffect(() => {
-    console.log("USE EFFECT NEXTPAGE");
     nextPage();
   }, [pageNumber]);
 
@@ -92,47 +82,45 @@ export default function Home({ data, defaultEndpoint, errorCode }) {
     }
   });
 
-  const updateQuery = (movie, type, pageNumber) => {
-    console.log("Verdier i updateQuery : ", movie, type, pageNumber);
-    const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}&type=${type}`;
+  const updateQuery = (
+    movie: string,
+    type: string,
+    pageNumber: number,
+    year: string
+  ) => {
+    console.log("Verdier i updateQuery : ", movie, type, pageNumber, year);
+    const href = `/?movieTitle=${movie}&pageNumber=${pageNumber}&type=${type}&year=${year}`;
 
     router.push(href);
   };
 
   const nextPage = () => {
-    console.log(
-      "Nextpage: ",
-      router.query.movieTitle,
-      router.query.type,
-      pageNumber
-    );
-    const href = `/?movieTitle=${router.query.movieTitle}&pageNumber=${pageNumber}&type=${router.query.type}`;
-
+    const href = `/?movieTitle=${router.query.movieTitle}&pageNumber=${pageNumber}&type=${router.query.type}&year=${router.query.year}`;
     router.push(href);
   };
 
-  function incrementPageNumber() {
+  const incrementPageNumber = () => {
     if (currentAmount < 10) {
       return;
     } else {
       updatePageNumber(pageNumber + 1);
     }
-  }
+  };
 
-  function decrementPageNumber() {
+  const decrementPageNumber = () => {
     if (pageNumber > 1) {
       updatePageNumber(pageNumber - 1);
     } else if (pageNumber == 2) {
       updatePageNumber(pageNumber - 1);
     } else {
     }
-  }
+  };
 
   return (
     <Container fluid="true">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Create Next App</title>
+        <title>Movie Search</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar bg="dark" variant="dark" className="justify-content-center">
@@ -148,9 +136,11 @@ export default function Home({ data, defaultEndpoint, errorCode }) {
         router={router}
         disableAdd={disableAdd}
         disableSub={disableSub}
-        incrementPageNumber={incrementPageNumber}
-        decrementPageNumber={decrementPageNumber}
+        incrementPageNumber={() => incrementPageNumber()}
+        decrementPageNumber={() => decrementPageNumber()}
       />
     </Container>
   );
-}
+};
+
+export default Home;

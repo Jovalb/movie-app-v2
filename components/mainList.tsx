@@ -20,17 +20,13 @@ export const MainList = ({
   incrementPageNumber,
   decrementPageNumber,
 }) => {
-  // const cachedWatchList = store.session.get("cachedList");
-  // const cachedWatchList = JSON.parse(localStorage.getItem("cachedList"));
   const [watchList, setWatchList] = useState(
     store.session.get("cachedList") || []
   );
   useEffect(() => {
-    console.log("USE EFFECT CACHE", temporaryList);
     store.session.set("cachedList", temporaryList);
   });
 
-  console.log("Watchlist : ", watchList);
   let temporaryList = watchList;
 
   const handleAdd = (event) => {
@@ -72,10 +68,10 @@ export const MainList = ({
       <Row>
         <Col className={styles.listHeader}>
           <h2>MovieList</h2>
-          <Button disabled={disableAdd} onClick={incrementPageNumber}>
+          <Button disabled={disableAdd} onClick={() => incrementPageNumber()}>
             Next
           </Button>
-          <Button disabled={disableSub} onClick={decrementPageNumber}>
+          <Button disabled={disableSub} onClick={() => decrementPageNumber()}>
             Prev
           </Button>
         </Col>
@@ -113,40 +109,4 @@ export const MainList = ({
       </Row>
     </Container>
   );
-
-  // return (
-  //   <Row className={styles.rowLists}>
-  //     <Col>
-  //       <h2>Movie List</h2>
-
-  //       <div className={styles.list}>
-  //         {results.map((result) => {
-  //           return (
-  //             <MovieModal handleAdd={handleAdd}>
-  //               <Movie key={result.imdbID} props={result} />
-  //             </MovieModal>
-  //           );
-  //         })}
-  //       </div>
-  //       <Button disabled={disableAdd} onClick={incrementPageNumber}>
-  //         Next
-  //       </Button>
-  //       <Button disabled={disableSub} onClick={decrementPageNumber}>
-  //         Prev
-  //       </Button>
-  //     </Col>
-  //     <Col>
-  //       <h2>Watch List</h2>
-  //       <div className={styles.list}>
-  //         {watchList.map((result) => {
-  //           return (
-  //             <WatchListModal handleRemove={handleRemove}>
-  //               <Movie key={result.imdbID} props={result} />
-  //             </WatchListModal>
-  //           );
-  //         })}
-  //       </div>
-  //     </Col>
-  //   </Row>
-  // );
 };
