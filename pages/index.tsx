@@ -79,7 +79,7 @@ const Home = ({ data }) => {
     nextPage();
   }, [pageNumber]);
 
-  // use effect that enables and disables the next and prev button when conditions are met
+  // use effect that enables and disables the next and prev button on mount and state changes
   useEffect(() => {
     if (currentAmount < 10) {
       setDisableAdd(true);

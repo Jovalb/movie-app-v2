@@ -48,14 +48,6 @@ const MovieForm = ({ updateQuery }) => {
     } else {
       // If the validation is correct the query gets updated and the page refetches new data with this query
       updateQuery(movieTitle, type, 1, year);
-      // const endpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${1}&type=${type}&year=${year}`;
-      // const res = await fetch(endpoint);
-      // const data = await res.json();
-      // if (data.Response === "True") {
-      //   updateQuery(movieTitle, type, 1, year);
-      // } else {
-      //   alert("Could not find any results, try again!");
-      // }
     }
   };
 
