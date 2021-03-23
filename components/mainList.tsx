@@ -19,6 +19,7 @@ export const MainList = ({
   disableSub,
   incrementPageNumber,
   decrementPageNumber,
+  totalResults,
 }) => {
 
   // uses state and use effect for storing temporary data to the watch list.
@@ -83,6 +84,7 @@ export const MainList = ({
       <Row>
         <Col className={styles.listHeader}>
           <h2>MovieList</h2>
+          <p>Total Results found : {totalResults}</p>
           <Button disabled={disableAdd} onClick={() => incrementPageNumber()}>
             Next
           </Button>

@@ -49,7 +49,7 @@ const Home = ({ data }) => {
   const router = useRouter();
 
   // Here the "Search" results are destrucutred from the props and the "results" use-state is sets the search results to default.
-  const { Search } = data;
+  const { Search, totalResults } = data;
   const [results, updateResults] = useState(Search);
   // Use states for disabling and enabling the next,prev buttons and for updating the page number when conditions are met.
   const [disableAdd, setDisableAdd] = useState(false);
@@ -132,7 +132,8 @@ const Home = ({ data }) => {
   };
 
   return (
-    // Here I used bootstrap to make the setup easier and more responsive with some inline styling
+    // Here I used bootstrap to make the setup easier and more responsive
+    // @ts-ignore
     <Container fluid="true">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -150,6 +151,7 @@ const Home = ({ data }) => {
 
       {/* Results is passed to the lists together with functions for page buttons and router for refreshing data */}
       <MainList
+        totalResults={totalResults}
         results={results}
         router={router}
         disableAdd={disableAdd}

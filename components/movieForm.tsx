@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FormControlProps } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Form, Row } from "react-bootstrap";
 import validateSearch from "../pages/functions/validation";
 import styles from "./movieForm.module.css";
@@ -99,6 +100,7 @@ const MovieForm = ({ updateQuery }) => {
             {items}
           </Form.Control>
         </Form.Group>
+        <Button type="submit">Submit</Button>
       </Form>
     </Row>
   );
