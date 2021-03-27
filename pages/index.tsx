@@ -18,20 +18,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     pageNumber = 1;
   }
 
+  if(movieTitle == "undefined" && type == "undefined" && year == "undefined"){
+    movieTitle = "mulan", type="",year=""
+  }
+
   // Fetching to the api point at /api/getData and passing the query parameters
   const defaultEndpoint = `http://localhost:3000/api/getData?movieTitle=${movieTitle}&pageNumber=${pageNumber}&type=${type}&year=${year}`;
   const res = await fetch(defaultEndpoint);
 
   // If the fetch return status code 400, "errorCode" will be true and redirect to the defaultPage.
   const errorCode = res.ok ? false : res.status;
-  if (errorCode) {
-    return {
-      redirect: {
-        destination: defaultPage,
-        permanent: false,
-      },
-    };
-  }
+  // if (errorCode) {
+  //   return {
+  //     redirect: {
+  //       destination: defaultPage,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
   // If the fetch returns status 200, it will send the props down to the index component.
   const data = await res.json();
   return {
